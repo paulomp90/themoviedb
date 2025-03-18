@@ -1,7 +1,7 @@
-<template>
-    <div>
-        <h1>This is an Movie Details page</h1>
-    </div>
-</template>
+<script setup>
+import MovieDetails from '../components/DetailsPage/MovieDetails.vue'
+</script>
 
-<style></style>
+<template>
+    <MovieDetails />
+</template>
