@@ -1,5 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { RouterLink } from 'vue-router'
 </script>
 
 <template>
@@ -7,7 +8,11 @@ import { RouterView } from 'vue-router'
         <header
             class="bg-gradient-to-r from-gray-800 to-gray-700 z-50 flex items-center justify-center p-6 shadow-lg"
         >
-            <h1 class="text-4xl font-bold text-white text-center tracking-wide">Movie Database</h1>
+            <RouterLink to="/">
+                <h1 class="text-4xl font-bold text-white text-center tracking-wide">
+                    Movie Database
+                </h1>
+            </RouterLink>
         </header>
 
         <main

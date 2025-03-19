@@ -13,7 +13,7 @@ const perPageOptions = [5, 10, 20]
         class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-800/50 p-4 rounded-lg backdrop-blur-sm"
     >
         <div class="flex items-center gap-4">
-            <span class="text-gray-400">Per page:</span>
+            <span class="text-base text-gray-400">Per page:</span>
             <select
                 :value="perPage"
                 @change="$emit('update:perPage', parseInt($event.target.value))"
@@ -34,7 +34,7 @@ const perPageOptions = [5, 10, 20]
                 Previous
             </button>
 
-            <span class="px-4 py-1.5 bg-gray-700 rounded-md border border-gray-600 text-white">
+            <span class="text-base text-gray-400 px-4 py-1.5">
                 {{ currentPage }} / {{ totalPages }}
             </span>
 

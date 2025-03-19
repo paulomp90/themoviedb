@@ -11,6 +11,7 @@ const MUTATIONS = {
     SET_QUERY: 'SET_QUERY',
     SET_PER_PAGE: 'SET_PER_PAGE',
     SET_TMDB_PAGE: 'SET_TMDB_PAGE',
+    SET_FILTERS: 'SET_FILTERS',
 }
 
 export default {
@@ -23,7 +24,10 @@ export default {
         // Search and pagination feature
         allMovies: [],
         fetchedPages: new Set(),
-        query: '',
+        filters: {
+            query: '',
+            year: '',
+        },
         perPage: 10,
         totalResults: 0,
         currentPage: 1,
@@ -41,7 +45,7 @@ export default {
             state.movieDetails = movie
         },
         [MUTATIONS.SET_SIMILAR_MOVIES](state, movies) {
-            state.similarMovies = movies.slice(0, 5)
+            state.similarMovies = movies
         },
         [MUTATIONS.SET_MOVIES](state, { movies, totalResults }) {
             if (!state.fetchedPages.has(state.tmdbPage)) {
@@ -57,17 +61,18 @@ export default {
         [MUTATIONS.SET_PAGE](state, page) {
             state.currentPage = page
         },
-        [MUTATIONS.SET_QUERY](state, query) {
-            state.query = query
-            state.currentPage = 1
-            state.tmdbPage = 1
-        },
+
         [MUTATIONS.SET_PER_PAGE](state, perPage) {
             state.perPage = perPage
             state.currentPage = 1
         },
         [MUTATIONS.SET_TMDB_PAGE](state, page) {
             state.tmdbPage = page
+        },
+        [MUTATIONS.SET_FILTERS](state, filters) {
+            state.filters = { ...state.filters, ...filters }
+            state.currentPage = 1
+            state.tmdbPage = 1
         },
     },
 
@@ -93,13 +98,15 @@ export default {
             if (!id) throw new Error('No movie id provided')
 
             commit(MUTATIONS.SET_LOADING, true)
+            commit(MUTATIONS.SET_SIMILAR_MOVIES, [])
             try {
-                const response = await fetch(
-                    `https://api.themoviedb.org/3/movie/${id}/similar`,
-                    options(),
-                )
-                const data = await response.json()
-                commit(MUTATIONS.SET_SIMILAR_MOVIES, data.results)
+                await fetch(`https://api.themoviedb.org/3/movie/${id}/similar`, options())
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const similarMovies = data.results.slice(0, 5)
+
+                        commit(MUTATIONS.SET_SIMILAR_MOVIES, similarMovies)
+                    })
             } catch (error) {
                 console.error(`Error fetching similar movies for ${id}:`, error)
                 throw error
@@ -110,14 +117,20 @@ export default {
 
         // Search and pagination actions
         async fetchMovies({ commit, state }) {
-            if (!state.query) return
+            if (!state.filters.query) return
 
             commit(MUTATIONS.SET_LOADING, true)
             try {
-                const searchParams = new URLSearchParams({
-                    query: state.query,
-                    page: state.tmdbPage,
-                })
+                const searchParams = new URLSearchParams()
+
+                // Add all filters to searchParams
+                if (state.filters.year) {
+                    searchParams.append('primary_release_year', state.filters.year)
+                }
+
+                searchParams.append('query', state.filters.query)
+                searchParams.append('page', state.tmdbPage)
+
                 const response = await fetch(
                     `https://api.themoviedb.org/3/search/movie?${searchParams}`,
                     options(),
@@ -136,9 +149,12 @@ export default {
             }
         },
 
-        updateQuery({ commit, dispatch }, query) {
+        updateFilters({ commit, state, dispatch }, filters) {
             commit(MUTATIONS.CLEAR_MOVIES)
-            commit(MUTATIONS.SET_QUERY, query)
+
+            const newFilters = { ...state.filters, ...filters }
+
+            commit(MUTATIONS.SET_FILTERS, newFilters)
             dispatch('fetchMovies')
         },
 
@@ -164,19 +180,11 @@ export default {
     },
 
     getters: {
-        // Movie details getters
-        movieDetails: (state) => state.movieDetails,
-        similarMovies: (state) => state.similarMovies,
-
-        // Search and pagination getters
         paginatedMovies: (state) => {
             const startIndex = (state.currentPage - 1) * state.perPage
             const endIndex = startIndex + state.perPage
             return state.allMovies.slice(startIndex, endIndex)
         },
         totalFrontendPages: (state) => Math.ceil(state.totalResults / state.perPage),
-
-        // UI getters
-        isLoading: (state) => state.loading,
     },
 }
