@@ -1,28 +1,32 @@
 <script setup>
 import debounce from 'lodash/debounce'
 import { useStore } from 'vuex'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import IconMagnifyingGlass from '@/components/icons/IconMagnifyingGlass.vue'
-import MovieDetailsSimilar from '@/components/MovieList.vue'
+import MovieList from '@/components/MovieList.vue'
+import MoviePagination from '@/components/MoviePagination.vue'
 
 const store = useStore()
-
 const searchQuery = ref('')
-const movies = computed(() => store.state.movies.movies)
+const selectedPerPage = ref(10)
 
-const fetchMovies = debounce(() => {
-    if (searchQuery.value) {
-        store.dispatch('movies/searchMovies', searchQuery.value)
-    } else {
-        store.dispatch('movies/fetchPopularMovies')
-    }
+const movies = computed(() => store.getters['movies/paginatedMovies'])
+const currentPage = computed(() => store.state.movies.currentPage)
+const totalPages = computed(() => store.getters['movies/totalFrontendPages'])
+
+// Search function
+const handleSearch = debounce(() => {
+    store.dispatch('movies/updateQuery', searchQuery.value)
 }, 300)
 
-watch(searchQuery, fetchMovies)
+// Pagination functions
+const handlePageChange = (newPage) => {
+    store.dispatch('movies/updatePage', newPage)
+}
 
-onMounted(() => {
-    store.dispatch('movies/fetchPopularMovies')
-})
+const handlePerPageChange = (newPerPage) => {
+    store.dispatch('movies/updatePerPage', newPerPage)
+}
 
 const loading = computed(() => store.state.movies.loading)
 </script>
@@ -34,6 +38,7 @@ const loading = computed(() => store.state.movies.loading)
                 <input
                     id="search"
                     v-model="searchQuery"
+                    @input="handleSearch"
                     placeholder="Search for a movie..."
                     class="w-full px-6 py-3 rounded-full border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-xl"
                 />
@@ -47,9 +52,22 @@ const loading = computed(() => store.state.movies.loading)
             ></div>
         </div>
 
-        <MovieDetailsSimilar
+        <MovieList
+            v-if="movies.length > 0"
             :movies="movies"
+            :key="currentPage"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         />
+        <div v-else-if="!loading" class="text-white">No movies found</div>
+
+        <div v-if="movies.length > 0" class="w-full mt-8 mb-12">
+            <MoviePagination
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                v-model:per-page="selectedPerPage"
+                @update:page="handlePageChange"
+                @update:perPage="handlePerPageChange"
+            />
+        </div>
     </div>
 </template>

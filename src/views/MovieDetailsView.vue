@@ -1,11 +1,13 @@
 <script setup>
 import MovieDetails from '@/components/MovieDetails.vue'
-import MovieDetailsSimilar from '@/components/MovieList.vue'
+import MovieList from '@/components/MovieList.vue'
 import { useStore } from 'vuex'
 import { computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const store = useStore()
+
+const router = useRouter()
 const route = useRoute()
 
 const movieDetails = computed(() => store.state.movies.movieDetails)
@@ -15,6 +17,10 @@ const releaseDate = computed(() => movieDetails.value?.release_date || 'No relea
 const overview = computed(() => movieDetails.value?.overview || 'No overview available')
 const url = computed(() => movieDetails.value?.poster_path)
 const similarMovies = computed(() => store.state.movies.similarMovies || [])
+
+const goBack = () => {
+    router.back()
+}
 
 onMounted(() => {
     const id = route.params.id
@@ -26,7 +32,8 @@ onMounted(() => {
 <template>
     <div class="flex flex-col gap-4 md:gap-8 p-4 md:p-8 max-w-7xl mx-auto">
         <RouterLink
-            to="/"
+            to="#"
+            @click.prevent="goBack"
             class="w-fit px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
         >
             ← Back
@@ -40,6 +47,6 @@ onMounted(() => {
             :title="title"
         />
 
-        <MovieDetailsSimilar :movies="similarMovies" title="Similar moveis" />
+        <MovieList :movies="similarMovies" title="Similar moveis" />
     </div>
 </template>
