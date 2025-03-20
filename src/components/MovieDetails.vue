@@ -15,7 +15,7 @@ defineProps({
                 :src="`https://image.tmdb.org/t/p/w500${url}`"
                 :alt="title"
                 class="w-[200px] md:w-[300px] rounded-lg shadow-md"
-                onerror="this.src='urlErrorFallback'"
+                :onerror="`this.src='${urlErrorFallback}'`"
             />
         </div>
         <div class="flex-grow">

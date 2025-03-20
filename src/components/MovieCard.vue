@@ -17,7 +17,7 @@ defineProps({
         :src="`https://image.tmdb.org/t/p/w500${url}`"
         :alt="title"
         class="object-cover w-full h-full"
-        onerror="this.src = 'urlErrorFallback'"
+        :onerror="`this.src='${urlErrorFallback}'`"
     />
     <div
         class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
