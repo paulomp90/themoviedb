@@ -20,6 +20,7 @@ export default {
 
         commit(MOVIES_MUTATIONS.SET_LOADING, true)
         commit(MOVIES_MUTATIONS.SET_SIMILAR_MOVIES, [])
+
         try {
             await fetch(`https://api.themoviedb.org/3/movie/${id}/similar`, options())
                 .then((response) => response.json())
@@ -84,6 +85,7 @@ export default {
 
         if (totalItemsNeeded > totalItemsAvailable) {
             const nextTMDbPage = Math.ceil(totalItemsNeeded / itemsPerTMDbPage)
+
             if (nextTMDbPage > state.tmdbPage) {
                 commit(MOVIES_MUTATIONS.SET_TMDB_PAGE, nextTMDbPage)
                 dispatch('fetchMovies')
