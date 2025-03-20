@@ -12,4 +12,7 @@ export default {
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.{js,vue}', '!src/main.js'],
+    testEnvironmentOptions: {
+        customExportConditions: ['node', 'node-addons'],
+    },
 }
