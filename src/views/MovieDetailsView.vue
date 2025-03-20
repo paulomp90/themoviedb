@@ -53,11 +53,13 @@ watch(
         </RouterLink>
 
         <MovieDetails
+            :id="parseInt(route.params.id)"
             :url="url"
             :release-date="releaseDate"
             :overview="overview"
             url-error-fallback="https://placehold.co/500x750?text=No+Poster"
             :title="title"
+            :is-favorite="store.getters['user/isFavorite'](route.params.id)"
         />
 
         <MovieList :movies="similarMovies" title="Similar moveis" />

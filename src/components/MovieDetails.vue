@@ -1,10 +1,32 @@
 <script setup>
+import FavoriteButton from '@/components/FavoriteButton.vue'
+
 defineProps({
-    title: String,
-    releaseDate: String,
-    url: String,
-    urlErrorFallback: String,
-    overview: String,
+    id: {
+        type: Number,
+        required: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    releaseDate: {
+        type: String,
+        required: true,
+    },
+    url: String || undefined,
+    urlErrorFallback: {
+        type: String,
+        required: true,
+    },
+    overview: {
+        type: String,
+        required: true,
+    },
+    isFavorite: {
+        type: Boolean,
+        required: true,
+    },
 })
 </script>
 
@@ -19,11 +41,19 @@ defineProps({
             />
         </div>
         <div class="flex-grow">
-            <h1
-                class="text-2xl md:text-4xl font-bold mb-2 md:mb-4 text-center md:text-left text-gray-400"
-            >
-                {{ title }}
-            </h1>
+            <div class="flex items-center justify-center md:justify-start gap-2">
+                <h1
+                    class="text-2xl md:text-4xl font-bold mb-2 md:mb-4 text-center md:text-left text-gray-400"
+                >
+                    {{ title }}
+                </h1>
+                <FavoriteButton
+                    :movie-id="id"
+                    action="user/toggleFavorite"
+                    :details-component="true"
+                />
+            </div>
+
             <div class="text-gray-500 mb-2 md:mb-4 text-center md:text-left">
                 Release Date: {{ releaseDate }}
             </div>
