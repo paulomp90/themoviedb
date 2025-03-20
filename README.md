@@ -81,7 +81,11 @@ git clone git@github.com:paulomp90/themoviedb.git
 cd themoviedb
 ```
 
-2. Install dependencies
+2. Create a `.env` file in the root directory
+
+Add the `VITE_API_KEY` which will contain the TMDB API key
+
+3. Install dependencies
 
 Run one of the following commands
 
@@ -91,7 +95,7 @@ yarn install
 pnpm install
 ```
 
-3. Running the Development Server
+4. Running the Development Server
 
 ```sh
 npm run dev
@@ -101,7 +105,7 @@ pnpm dev
 
 By default, the app will be available at http://localhost:5173.
 
-4. Running Tests
+5. Running Tests
 
 ```sh
 npm run test
