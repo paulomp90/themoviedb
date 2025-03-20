@@ -77,17 +77,13 @@ export default {
     },
 
     actions: {
-        // Movie details actions
         async fetchMovieDetails({ commit }, id) {
             if (!id) throw new Error('No movie id provided')
 
             try {
-                const response = await fetch(
-                    `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
-                    options(),
-                )
-                const data = await response.json()
-                commit(MUTATIONS.SET_MOVIE_DETAILS, data)
+                await fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options())
+                    .then((response) => response.json())
+                    .then((data) => commit(MUTATIONS.SET_MOVIE_DETAILS, data))
             } catch (error) {
                 console.error(`Error fetching movie ${id}:`, error)
                 throw error
@@ -115,7 +111,6 @@ export default {
             }
         },
 
-        // Search and pagination actions
         async fetchMovies({ commit, state }) {
             if (!state.filters.query) return
 
@@ -123,7 +118,6 @@ export default {
             try {
                 const searchParams = new URLSearchParams()
 
-                // Add all filters to searchParams
                 if (state.filters.year) {
                     searchParams.append('primary_release_year', state.filters.year)
                 }
@@ -131,16 +125,14 @@ export default {
                 searchParams.append('query', state.filters.query)
                 searchParams.append('page', state.tmdbPage)
 
-                const response = await fetch(
-                    `https://api.themoviedb.org/3/search/movie?${searchParams}`,
-                    options(),
-                )
-                const data = await response.json()
-
-                commit(MUTATIONS.SET_MOVIES, {
-                    movies: data.results,
-                    totalResults: data.total_results,
-                })
+                await fetch(`https://api.themoviedb.org/3/search/movie?${searchParams}`, options())
+                    .then((response) => response.json())
+                    .then((data) =>
+                        commit(MUTATIONS.SET_MOVIES, {
+                            movies: data.results,
+                            totalResults: data.total_results,
+                        }),
+                    )
             } catch (error) {
                 console.error('Error fetching movies:', error)
                 throw error

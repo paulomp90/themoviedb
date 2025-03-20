@@ -2,6 +2,7 @@
 import { defineProps } from 'vue'
 import { RouterLink } from 'vue-router'
 import MovieCard from '@/components/MovieCard.vue'
+import FavoriteButton from '@/components/FavoriteButton.vue'
 
 defineProps({
     movies: {
@@ -26,15 +27,23 @@ defineProps({
                 :key="movie.id"
                 class="bg-gray-800 rounded-xl shadow-xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300"
             >
-                <RouterLink class="aspect-w-2 aspect-h-3 relative" :to="`/movie/${movie.id}`">
-                    <MovieCard
-                        :url="movie.poster_path"
-                        :release-date="movie.release_date"
-                        :vote-average="movie.vote_average"
-                        url-error-fallback="https://placehold.co/500x750?text=No+Poster"
-                        :title="movie.title"
+                <div class="relative">
+                    <FavoriteButton
+                        :movie-id="movie.id"
+                        action="user/toggleFavorite"
+                        :details-component="false"
                     />
-                </RouterLink>
+                    <RouterLink class="block aspect-w-2 aspect-h-3" :to="`/movie/${movie.id}`">
+                        <MovieCard
+                            :id="movie.id"
+                            :url="movie.poster_path"
+                            :release-date="movie.release_date"
+                            :vote-average="movie.vote_average"
+                            url-error-fallback="https://placehold.co/500x750?text=No+Poster"
+                            :title="movie.title"
+                        />
+                    </RouterLink>
+                </div>
             </li>
         </transition-group>
     </div>
