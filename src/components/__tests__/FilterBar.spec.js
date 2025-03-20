@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from '@jest/globals'
 import { mount } from '@vue/test-utils'
-import IconMagnifyingGlass from './icons/IconMagnifyingGlass.vue'
-import FilterBar from './FilterBar.vue'
+import IconMagnifyingGlass from '../icons/IconMagnifyingGlass.vue'
+import FilterBar from '../FilterBar.vue'
 
 describe('FilterBar', () => {
     let wrapper

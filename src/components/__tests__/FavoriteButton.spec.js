@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 
 import { mount } from '@vue/test-utils'
 import { createStore } from 'vuex'
-import FavoriteButton from './FavoriteButton.vue'
-import IconHeart from './icons/IconHeart.vue'
+import FavoriteButton from '../FavoriteButton.vue'
+import IconHeart from '../icons/IconHeart.vue'
 
 describe('FavoriteButton', () => {
     let store

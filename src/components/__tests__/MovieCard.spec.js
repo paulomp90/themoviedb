@@ -1,8 +1,8 @@
 import { describe, it, expect } from '@jest/globals'
 
 import { mount } from '@vue/test-utils'
-import MovieCard from './MovieCard.vue'
-import IconStar from './icons/IconStar.vue'
+import MovieCard from '../MovieCard.vue'
+import IconStar from '../icons/IconStar.vue'
 
 describe('MovieCard', () => {
     const defaultProps = {
